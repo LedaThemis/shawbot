@@ -170,6 +170,24 @@ bot.once('spawn', () => {
       });
     }
 
+    if (message.startsWith('attack')) {
+      const targetUsername = message.split(' ')[1];
+      const target = bot.players[targetUsername];
+
+      if (!target) {
+        bot.chat(`Could not find ${targetUsername}.`);
+        return;
+      }
+
+      if (!target.entity) {
+        bot.chat(`I can't see ${targetUsername}.`);
+        return;
+      }
+
+      bot.chat(`Attacking ${targetUsername}!`);
+      bot.pvp.attack(target.entity);
+    }
+
     if (message === 'guard') {
       const player = bot.players[username];
 
