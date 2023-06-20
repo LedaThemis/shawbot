@@ -101,7 +101,8 @@ bot.once('spawn', () => {
       }
 
       bot.equip(item, destination as EquipmentDestination).then(() => {
-        if (!bot.heldItem || (bot.heldItem.name === itemName)) {
+        // If defined and the name is equal to equipped
+        if (bot.heldItem && bot.heldItem.name === item.name) {
           bot.chat(`Succesfully equipped ${itemName} to ${destination}.`);
         } else {
           bot.chat(`Failed to equip ${itemName} to ${destination}.`);
