@@ -110,6 +110,31 @@ bot.once('spawn', () => {
       });
     }
 
+    if (message.startsWith('unequip')) {
+      const destination = message.split(' ')[1] ?? 'hand';
+
+      if (!VALID_EQUIP_DESTINATIONS.includes(destination)) {
+        bot.chat(`${destination} is not a valid destination. (${VALID_EQUIP_DESTINATIONS.join(', ')})`);
+        return;
+      }
+
+      if (!bot.heldItem) {
+        bot.chat(`I don't have anything equipped on ${destination}.`);
+        return;
+      }
+
+      const pastHeldItemName = bot.heldItem.name;
+
+      bot.unequip(destination as EquipmentDestination).then(() => {
+        // If defined and the name is equal to equipped
+        if (!bot.heldItem) {
+          bot.chat(`Succesfully unequipped ${pastHeldItemName} from ${destination}.`);
+        } else {
+          bot.chat(`Failed to unequip ${pastHeldItemName} from ${destination}.`);
+        }
+      });
+    }
+
     if (message === 'guard') {
       const player = bot.players[username];
 
