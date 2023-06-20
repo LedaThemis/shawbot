@@ -100,6 +100,8 @@ bot.once('spawn', () => {
         return;
       }
 
+      // TODO: If you equip an item to an unreasonable destination it disappears from inventory?
+
       bot.equip(item, destination as EquipmentDestination).then(() => {
         // If defined and the name is equal to equipped
         if (bot.heldItem && bot.heldItem.name === item.name) {
