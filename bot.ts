@@ -101,7 +101,8 @@ bot.once('spawn', () => {
 
       console.log({ player });
 
-      if (!player.entity) {
+      
+      if (!player || !player.entity) {
         bot.chat("I can't see you.");
         return;
       }
