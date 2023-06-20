@@ -176,4 +176,15 @@ bot.once('spawn', () => {
       moveToGuardPos();
     }
   });
+
+  // AUTO EAT
+  bot.on('autoeat_started', (item, offhand) => {
+    console.log(`Eating ${item.name} in ${offhand ? 'offhand' : 'hand'}`);
+  });
+
+  bot.on('autoeat_finished', (item, offhand) => {
+    console.log(`Finished eating ${item.name} in ${offhand ? 'offhand' : 'hand'}`);
+  });
+
+  bot.on('autoeat_error', console.error);
 });
