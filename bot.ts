@@ -89,7 +89,7 @@ bot.once('spawn', () => {
       const destination = message.split(' ')[2] ?? 'hand';
 
       if (!VALID_EQUIP_DESTINATIONS.includes(destination)) {
-        bot.chat(`${destination} is not a valid destination. (${VALID_EQUIP_DESTINATIONS.join(',')})`);
+        bot.chat(`${destination} is not a valid destination. (${VALID_EQUIP_DESTINATIONS.join(', ')})`);
         return;
       }
 
