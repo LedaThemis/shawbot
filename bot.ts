@@ -101,7 +101,6 @@ bot.once('spawn', () => {
 
       console.log({ player });
 
-      
       if (!player || !player.entity) {
         bot.chat("I can't see you.");
         return;
@@ -187,6 +186,20 @@ bot.once('spawn', () => {
 
       bot.chat(`Attacking ${targetUsername}!`);
       bot.pvp.attack(target.entity);
+    }
+
+    if (message === 'stop attack') {
+      if (!bot.pvp.target) {
+        bot.chat(`Not attacking anyone currently.`);
+        return;
+      }
+
+      const previousTarget = bot.pvp.target;
+
+      // TODO: There might be some considerations when using `guard` and `stop attack`
+      bot.pvp.stop().then(() => {
+        bot.chat(`Successfully stopped attacking ${previousTarget.username ?? previousTarget.displayName ?? previousTarget.name}.`);
+      });
     }
 
     if (message === 'guard') {
