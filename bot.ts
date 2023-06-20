@@ -3,6 +3,7 @@
 import mineflayer, { EquipmentDestination } from 'mineflayer';
 import { pathfinder, Movements, goals } from 'mineflayer-pathfinder';
 import { plugin as pvp } from 'mineflayer-pvp';
+import { plugin as autoeat } from 'mineflayer-auto-eat';
 import type { Vec3 } from 'vec3';
 if (process.argv.length < 4 || process.argv.length > 6) {
   console.log('Usage : node gps.js <host> <port> [<name>] [<password>]');
@@ -19,6 +20,8 @@ const botConfig = {
 console.log(botConfig);
 
 const VALID_EQUIP_DESTINATIONS = ['hand', 'head', 'torso', 'legs', 'feet', 'off-hand'];
+const VALID_PLUGINS = ['autoeat'];
+const VALID_PLUGIN_ACTIONS = ['start', 'stop'];
 
 const bot = mineflayer.createBot(botConfig);
 
@@ -28,6 +31,8 @@ bot.loadPlugin(pathfinder);
 console.log('INFO: Loaded `pathfinder` plugin.');
 bot.loadPlugin(pvp);
 console.log('INFO: Loaded `pvp` plugin.');
+bot.loadPlugin(autoeat);
+console.log('INFO: Loaded `autoeat` plugin.');
 
 bot.once('spawn', () => {
   console.log('INFO: Spawned');
@@ -62,7 +67,35 @@ bot.once('spawn', () => {
   }
 
   bot.on('chat', (username, message) => {
-    // Guard the location the player is standing
+    if (message.startsWith('plugin')) {
+      const pluginName = message.split(' ')[1];
+      const pluginAction = message.split(' ')[2];
+
+      if (!VALID_PLUGINS.includes(pluginName)) {
+        bot.chat(`Unknown plugin. (${VALID_PLUGINS.join(', ')})`);
+        return;
+      }
+
+      if (!VALID_PLUGIN_ACTIONS.includes(pluginAction)) {
+        bot.chat(`Invalid plugin action. (${VALID_PLUGIN_ACTIONS.join(', ')})`);
+        return;
+      }
+
+      switch (pluginName) {
+        case 'autoeat':
+          switch (pluginAction) {
+            case 'start':
+              bot.autoEat.enable();
+              break;
+            case 'stop':
+              bot.autoEat.disable();
+              break;
+          }
+      }
+
+      bot.chat(`Successfully applied ${pluginAction} to ${pluginName}.`);
+    }
+
     if (message === 'come') {
       const player = bot.players[username];
 
