@@ -21,6 +21,7 @@ type OptionsType = {
 const HOSTNAME = process.argv[2];
 
 function main() {
+  // Resolve hostname into ip address
   dns.lookup(HOSTNAME, (err, address) => {
     console.log(`INFO: Resolving ${HOSTNAME}`);
     if (err) {
@@ -47,6 +48,7 @@ function main() {
 
     console.log(options.botConfig);
 
+    // Create bot
     createBot(options);
   });
 
@@ -65,8 +67,6 @@ function main() {
 
     bot.once('spawn', () => {
       console.log('INFO: Spawned');
-      const defaultMove = new Movements(bot);
-      // Listen for player commands
 
       let guardPos: Vec3 | null = null;
 
