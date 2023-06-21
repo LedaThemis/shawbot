@@ -1,6 +1,6 @@
 // This is an example that uses mineflayer-pathfinder to showcase how simple it is to walk to goals
 
-import mineflayer, { EquipmentDestination } from 'mineflayer';
+import mineflayer, { EquipmentDestination, Player } from 'mineflayer';
 import { pathfinder, Movements, goals } from 'mineflayer-pathfinder';
 import { plugin as pvp } from 'mineflayer-pvp';
 import { plugin as autoeat } from 'mineflayer-auto-eat';
@@ -22,6 +22,11 @@ console.log(botConfig);
 const VALID_EQUIP_DESTINATIONS = ['hand', 'head', 'torso', 'legs', 'feet', 'off-hand'];
 const VALID_PLUGINS = ['autoeat'];
 const VALID_PLUGIN_ACTIONS = ['start', 'stop'];
+
+type StoreType = { followTarget: Player | null };
+const store: StoreType = {
+  followTarget: null,
+};
 
 const bot = mineflayer.createBot(botConfig);
 
@@ -229,6 +234,38 @@ bot.once('spawn', () => {
         bot.chat(`Succesfully tossed ${itemCount} ${itemName}.`);
       });
     }
+
+    if (message.startsWith('follow')) {
+      const targetUsername = message.split(' ')[1] ?? username;
+      const target = bot.players[targetUsername];
+
+      if (!target) {
+        bot.chat(`Could not find ${targetUsername}.`);
+        return;
+      }
+
+      if (!target.entity) {
+        bot.chat(`I can't see ${targetUsername}.`);
+        return;
+      }
+
+      store.followTarget = target;
+
+      bot.chat(`Following ${targetUsername}!`);
+    }
+
+    if (message === 'stop follow') {
+      if (!store.followTarget) {
+        bot.chat(`Not following anyone currently.`);
+        return;
+      }
+
+      const previousTarget = store.followTarget;
+      store.followTarget = null;
+     
+      bot.chat(`Successfully stopped following ${previousTarget.username ?? previousTarget.displayName}.`)
+    }
+
     if (message === 'guard') {
       const player = bot.players[username];
 
@@ -267,6 +304,13 @@ bot.once('spawn', () => {
     if (!entity && bot.pvp.target === undefined && guardPos) {
       moveToGuardPos();
     }
+  });
+
+  bot.on('physicsTick', () => {
+    if (!store.followTarget) return;
+
+    bot.pathfinder.setMovements(new Movements(bot));
+    bot.pathfinder.setGoal(new goals.GoalNear(store.followTarget.entity.position.x, store.followTarget.entity.position.y, store.followTarget.entity.position.z, RANGE_GOAL));
   });
 
   // AUTO EAT
