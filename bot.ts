@@ -1,5 +1,3 @@
-// This is an example that uses mineflayer-pathfinder to showcase how simple it is to walk to goals
-
 import mineflayer, { BotOptions, EquipmentDestination, Player } from 'mineflayer';
 import { pathfinder, Movements, goals } from 'mineflayer-pathfinder';
 import { plugin as pvp } from 'mineflayer-pvp';
