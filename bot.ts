@@ -6,14 +6,14 @@ import { plugin as pvp } from 'mineflayer-pvp';
 import { plugin as autoeat } from 'mineflayer-auto-eat';
 import type { Vec3 } from 'vec3';
 if (process.argv.length < 4 || process.argv.length > 6) {
-  console.log('Usage : node gps.js <host> <port> [<name>] [<password>]');
+  console.log('Usage : npm start -- <host> <port> [<name>] [<password>]');
   process.exit(1);
 }
 
 const botConfig = {
   host: process.argv[2],
   port: parseInt(process.argv[3]),
-  username: process.argv[4] ?? 'gps',
+  username: process.argv[4] ?? 'Shawbot',
   hideErrors: false,
 };
 
