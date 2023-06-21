@@ -51,7 +51,8 @@ dns.lookup(HOSTNAME, (err, address) => {
   main(options);
 });
 
-const main = ({ botConfig, VALID_EQUIP_DESTINATIONS, VALID_PLUGINS, VALID_PLUGIN_ACTIONS, store }: OptionsType) => {
+const main = (options: OptionsType) => {
+  const { botConfig, VALID_EQUIP_DESTINATIONS, VALID_PLUGINS, VALID_PLUGIN_ACTIONS, store } = options;
   const bot = mineflayer.createBot(botConfig);
 
   const RANGE_GOAL = 1; // get within this radius of the player
@@ -347,5 +348,11 @@ const main = ({ botConfig, VALID_EQUIP_DESTINATIONS, VALID_PLUGINS, VALID_PLUGIN
     });
 
     bot.on('autoeat_error', console.error);
+
+    bot.once('end', () => {
+      bot.removeAllListeners();
+      // TODO: Might wanna add a setTimeout
+      main(options);
+    });
   });
 };
