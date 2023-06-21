@@ -202,6 +202,33 @@ bot.once('spawn', () => {
       });
     }
 
+    if (message.startsWith('toss')) {
+      const itemName = message.split(' ')[1];
+      const itemCount = parseInt(message.split(' ')[2] ?? 1);
+
+      const item = bot.inventory.findInventoryItem(itemName, null, false);
+
+      if (!item) {
+        bot.chat(`I don't have ${itemName} on me.`);
+        return;
+      }
+
+      if (Number.isNaN(itemCount)) {
+        bot.chat(`Please provide a valid number.`);
+        return;
+      }
+
+      if (itemCount > item.count) {
+        bot.chat(`I only have ${item.count} of ${item.name} not ${itemCount}.`);
+        return;
+      }
+
+      // TODO: If you equip an item to an unreasonable destination it disappears from inventory?
+
+      bot.toss(item.type, null, itemCount).then(() => {
+        bot.chat(`Succesfully tossed ${itemCount} ${itemName}.`);
+      });
+    }
     if (message === 'guard') {
       const player = bot.players[username];
 
